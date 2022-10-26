@@ -15,7 +15,7 @@ class BaseParser:
         return urljoin(self._config.base_url, href)
 
     def get_html(self, url: str):
-        print(f' --- get_html: {url}')
+        print(f' ---> get_html: {url}')
         response = self.get_page(url=url)
         if response.status_code == 200:
             self._html = response.text

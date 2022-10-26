@@ -54,14 +54,14 @@ class Item(Printable):
     sku_category: str
     sku_link: str
     price: int = field(default=0)
-    price_promo: int = field(default=0)
+    price_promo: int | None = field(default=None)
     sku_status: int = field(default=0)
     sku_barcode: str = field(default='')
     sku_article: str = field(default='')
     sku_country: str = field(default='')
-    sku_weight_min: int = field(default=0)
-    sku_volume_min: int = field(default=0)
-    sku_quantity_min: int = field(default=0)
+    sku_weight_min: int | None = field(default=None)
+    sku_volume_min: int | None = field(default=None)
+    sku_quantity_min: int | None = field(default=None)
     sku_images: list[str] = field(default_factory=list[str])
 
     def __eq__(self, other):

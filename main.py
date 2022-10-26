@@ -136,7 +136,6 @@ ITEM_CHILD_VALUE_RULES = {
         },
         'post_processing': [
             'get_text',
-            'convert_amount',
         ]
     },
     'sku_volume_min': {
@@ -146,7 +145,6 @@ ITEM_CHILD_VALUE_RULES = {
         },
         'post_processing': [
             'get_text',
-            'convert_amount',
         ]
     },
     'sku_quantity_min': {
@@ -156,7 +154,6 @@ ITEM_CHILD_VALUE_RULES = {
         },
         'post_processing': [
             'get_text',
-            'convert_amount',
         ]
     },
 }
@@ -256,6 +253,6 @@ csv_helper.save_data('items_list_data.csv', items_list.items_list_data)
 
 items = Item(config, items_list, ITEM_RULES, ITEM_CHILD_VALUE_RULES, ITEM_GLOB_VALUE_RULES, PostProcessing)
 items.parse_all()
-print(items_list.items_data)
+print(items.items_data)
 
-csv_helper.save_data('items.csv', items_list.items_data)
+csv_helper.save_data('items.csv', items.items_data)

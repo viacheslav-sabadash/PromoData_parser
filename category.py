@@ -47,4 +47,4 @@ class Category(BaseParser):
 
     @property
     def sub_categories_data(self) -> list['data_classes.Category']:
-        return list(filter(lambda cat: cat.parent_category_id, self.__categories))
+        return list(filter(lambda cat: cat.parent_category_id is not None, self.__categories))

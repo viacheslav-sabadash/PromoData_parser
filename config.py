@@ -43,7 +43,7 @@ class Config:
         return self.__config.get('categories')
 
     @property
-    def delay_range_s(self) -> int:
+    def delay_range_s(self) -> int | str:
         return self.__config.get('delay_range_s')
 
     @property

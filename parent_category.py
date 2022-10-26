@@ -1,9 +1,10 @@
+import bs4
 from bs4 import BeautifulSoup
 
 import config
 import data_classes
-from page_loader import PageLoader
 from base_parser import BaseParser
+from page_loader import PageLoader
 
 PARSER = 'html.parser'
 

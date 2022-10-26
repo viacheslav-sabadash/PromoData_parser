@@ -37,5 +37,5 @@ class ItemsList(BaseParser, PageLoader):
                 )
 
     @property
-    def items_list_data(self) -> list['data_classes.Page']:
+    def items_list_data(self) -> list['data_classes.ItemList']:
         return list(self.__items)

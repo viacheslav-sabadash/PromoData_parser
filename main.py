@@ -96,6 +96,7 @@ ITEM_CHILD_VALUE_RULES = {
             'class_': 'catalog-price'
         },
         'post_processing': [
+            'get_text',
             'parse_first_int',
         ]
     },
@@ -106,6 +107,7 @@ ITEM_CHILD_VALUE_RULES = {
             'style': 'color:#000000;'
         },
         'post_processing': [
+            'get_text',
             'parse_first_int',
         ]
     },
@@ -116,6 +118,7 @@ ITEM_CHILD_VALUE_RULES = {
             'class_': 'catalog-item-no-stock'
         },
         'post_processing': [
+            'get_text',
             'bool',
             'int'
         ]
@@ -132,6 +135,7 @@ ITEM_CHILD_VALUE_RULES = {
             'selector': 'td + td + td > b + br > b',
         },
         'post_processing': [
+            'get_text',
             'convert_amount',
         ]
     },
@@ -141,6 +145,7 @@ ITEM_CHILD_VALUE_RULES = {
             'selector': 'td + td + td > b + br > b',
         },
         'post_processing': [
+            'get_text',
             'convert_amount',
         ]
     },
@@ -150,6 +155,7 @@ ITEM_CHILD_VALUE_RULES = {
             'selector': 'td + td + td > b + br > b',
         },
         'post_processing': [
+            'get_text',
             'convert_amount',
         ]
     },
@@ -161,13 +167,18 @@ ITEM_GLOB_VALUE_RULES = {
         'args': {
             'selector': 'div.catalog-element-top > div.catalog-element-right-area > div > h1',
         },
+        'post_processing': [
+            'get_text',
+        ]
     },
     'sku_country': {
         'call': 'select_one',
         'args': {
             'selector': 'div.catalog-element-offer.active > div.catalog-element-offer-left > p',
         },
+        'val': {'getattribute': 'text'},
         'post_processing': [
+            'get_text',
             'get_clean_country',
         ]
     },
@@ -176,6 +187,7 @@ ITEM_GLOB_VALUE_RULES = {
         'args': {
             'selector': 'div[class^="catalog-element-small-picture"] img',
         },
+        'val': {'get': 'src'},
         'post_processing': [
             'map_images'
         ]
@@ -242,7 +254,7 @@ print(items_list.items_list_data[:200])
 
 csv_helper.save_data('items_list_data.csv', items_list.items_list_data)
 
-items = Item(config, cat_pagination, ITEM_RULES, ITEM_CHILD_VALUE_RULES, ITEM_GLOB_VALUE_RULES, PostProcessing)
+items = Item(config, items_list, ITEM_RULES, ITEM_CHILD_VALUE_RULES, ITEM_GLOB_VALUE_RULES, PostProcessing)
 items.parse_all()
 print(items_list.items_data)
 

@@ -1,10 +1,25 @@
 import re
+from abc import ABCMeta, abstractmethod
 from typing import Any
 
 from data_classes import Item
 
 
-class PostProcessing:
+class PostProcessingBase(metaclass=ABCMeta):
+    """
+    We must implement at least line_process() method in PostProcessing
+    """
+
+    @abstractmethod
+    def line_process(self):
+        ...
+
+    @abstractmethod
+    def get_text(self):
+        ...
+
+
+class PostProcessing(PostProcessingBase):
 
     def __init__(self, value: Any):
         self.value = value
@@ -13,6 +28,14 @@ class PostProcessing:
         # TODO: change prices if discount
         # TODO: remove unused amounts based on measuring
         pass
+
+    @property
+    def get_text(self) -> str:
+        """
+        Return tag text if 'text' attribute exist, else return empty string
+        :return: tag.text
+        """
+        return getattr(self.value, 'text') if hasattr(self.value, 'text') else ''
 
     @property
     def parse_first_int(self):
@@ -46,4 +69,3 @@ class PostProcessing:
     def map_images(self):
         # TODO: abs_path
         return list(map(lambda im: im.get('src'), self.value))
-

@@ -1,0 +1,5 @@
+{
+  "output_directory": "out",
+  "categories": ["Собаки", "Кошки"],
+  "delay_range_s": 5
+}

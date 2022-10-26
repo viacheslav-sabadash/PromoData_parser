@@ -1,0 +1,14 @@
+{
+  "output_directory": "out",
+  "categories": [],
+  "delay_range_s": "1-4",
+  "max_retries": 3,
+  "headers": {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
+  },
+  "logs_dir": "logs",
+  "restart": {
+    "restart_count": 3,
+    "interval_m": 0.2
+  }
+}

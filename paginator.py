@@ -62,5 +62,5 @@ class Paginator(BaseParser, PageLoader):
                     category_url = self.__pages[-1].url  # last url on page pagination
 
     @property
-    def pagination_data(self) -> list['data_classes.Category']:
+    def pagination_data(self) -> list['data_classes.Page']:
         return list(self.__pages)

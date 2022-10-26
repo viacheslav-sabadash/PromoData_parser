@@ -43,7 +43,7 @@ class ParentCategory(BaseParser, PageLoader):
             data_classes.Category(
                 id=i,
                 name=cat.text,
-                url=cat.get('href')
+                url=cat.get('href', '')
             )
             for i, cat in enumerate(self.__categories)
         ]

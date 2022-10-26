@@ -32,7 +32,8 @@ class PageLoader:
     def get_page(self, url: str) -> 'requests.Response':
         PageLoader._session.mount('', HTTPAdapter(max_retries=self._config.max_retries))
         current_time = datetime.utcnow().timestamp()
-        if current_time - PageLoader._last_request_time < self.delay_val():
-            time.sleep(current_time - PageLoader._last_request_time)
+        current_request_delay = self.delay_val()
+        if current_time - PageLoader._last_request_time < current_request_delay:
+            time.sleep(current_request_delay - (current_time - PageLoader._last_request_time))
         PageLoader._last_request_time = current_time
         return PageLoader._session.get(url=url, headers=self._config.headers)

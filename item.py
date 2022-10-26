@@ -21,7 +21,7 @@ class Item(BaseParser):
         self.__items_list = items_list
         self._rules = rules
         self._html: str = ''
-        self.__items: OrderedSet['data_classes.Page'] = OrderedSet()
+        self.__items: OrderedSet['data_classes.ItemList'] = OrderedSet()
 
     def parse_all(self):
         for page in self.__items_list.items_list_data:
@@ -36,5 +36,5 @@ class Item(BaseParser):
                 )
 
     @property
-    def items_list_data(self):
+    def items_data(self):
         return list(self.__items)

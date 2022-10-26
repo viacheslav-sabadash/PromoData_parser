@@ -4,12 +4,13 @@ from ordered_set import OrderedSet
 import config
 import data_classes
 from base_parser import BaseParser
+from page_loader import PageLoader
 from paginator import Paginator
 
 PARSER = 'html.parser'
 
 
-class ItemsList(BaseParser):
+class ItemsList(BaseParser, PageLoader):
 
     def __init__(
             self,
@@ -30,11 +31,11 @@ class ItemsList(BaseParser):
             for item in self._parse_rules(page_soup):
                 self.__items.append(
                     data_classes.ItemList(
-                        item_url=item.url,
+                        item_url=self.abs_url(item.get('href', '')),
                         **page.__dict__
                     )
                 )
 
     @property
-    def items_list_data(self):
+    def items_list_data(self) -> list['data_classes.Page']:
         return list(self.__items)

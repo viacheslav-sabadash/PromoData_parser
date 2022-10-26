@@ -35,11 +35,11 @@ class Page(Printable):
     category_id: int
     category: str | None
 
-    def __hash__(self):
-        return hash(self.uniq_name)
-
-    def __eq__(self, other):
-        return self.uniq_name == other.uniq_name
+    # def __hash__(self):
+    #     return hash(self.uniq_name)
+    #
+    # def __eq__(self, other):
+    #     return self.uniq_name == other.uniq_name
 
 
 @dataclass(frozen=True, eq=True, order=False, unsafe_hash=False)

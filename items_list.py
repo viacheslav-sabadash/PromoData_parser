@@ -11,6 +11,9 @@ PARSER = 'html.parser'
 
 
 class ItemsList(BaseParser, PageLoader):
+    """
+    Collect list of urls to site items
+    """
 
     def __init__(
             self,
@@ -23,8 +26,15 @@ class ItemsList(BaseParser, PageLoader):
         self._rules = rules
         self._html: str = ''
         self.__items: OrderedSet['data_classes.Page'] = OrderedSet()
+        super(ItemsList, self).__init__()
 
     def parse_all(self):
+        """
+        Handle for parser starting
+        :return: None
+        """
+        self.logger.info(f' > Starting Items List parsing for {len(self.__paginator.pagination_data)} pages')
+
         for page in self.__paginator.pagination_data:
             self.get_html(page.url)
             page_soup = BeautifulSoup(self._html, PARSER)
@@ -36,6 +46,12 @@ class ItemsList(BaseParser, PageLoader):
                     )
                 )
 
+        self.logger.info(f' < Items List parsing complete. Result total = {len(self.__items)}')
+
     @property
     def items_list_data(self) -> list['data_classes.ItemList']:
+        """
+        List of dataclasses.
+        :return: list of dataclasses
+        """
         return list(self.__items)

@@ -11,6 +11,9 @@ PARSER = 'html.parser'
 
 
 class Paginator(BaseParser, PageLoader):
+    """
+    Collect list of paginated pages
+    """
 
     def __init__(
             self,
@@ -26,6 +29,10 @@ class Paginator(BaseParser, PageLoader):
         super(Paginator, self).__init__()
 
     def parse_all(self):
+        """
+        Handle for parser starting
+        :return: None
+        """
         self.logger.info(f' > Starting Pagination parsing for {len(self.__categories.categories_data)} categories')
 
         for category in self.__categories.sub_categories_data:
@@ -72,4 +79,8 @@ class Paginator(BaseParser, PageLoader):
 
     @property
     def pagination_data(self) -> list['data_classes.Page']:
+        """
+        List of dataclasses.
+        :return: list of dataclasses
+        """
         return list(self.__pages)

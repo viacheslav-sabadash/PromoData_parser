@@ -54,7 +54,7 @@ class Item(BaseParser, PageLoader):
 
             # shared item values
             shared_item = dict(
-                price_datetime=datetime.utcnow().strftime("%Y-%d-%m %H:%M:%S"),
+                price_datetime=datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
                 sku_category=f'{page.parent_category}|{page.category}',
                 sku_link=page.item_url
             )

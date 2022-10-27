@@ -160,5 +160,7 @@ cython_debug/
 .idea/
 
 # Other
-/out/
-/logs/
+/out/*
+!/out/.gitkeep
+/logs/*
+!/logs/.gitkeep

@@ -78,7 +78,7 @@ CHILD_CATEGORIES_RULES = [
 
 In this example BeautifulSoup instance run consistently:
 ```python
-find_next(name='вшм', class_='popup-items').find_all('a', href=True)
+find_next(name='div', class_='popup-items').find_all('a', href=True)
 ```
 and if parser find `<a href="...">` tags append to all href,s queries from `add_url_params`
 In current example append: `?pc=60` or `&pc=60` depending on whether the current URL 
@@ -202,9 +202,8 @@ Fields: **url** and **parent_category** will be ignored as `field(repr=False)`
 ### Save data line by line
 
 class `Item` can store data to csv file line by line. To activate this need add to Item __init__ csv_filename='[some_file_name.csv]'.
-It is also advisable to clean the file before starting `Item`. There is a built-in method `erase_file()` in `CsvHelper` for this.
+It is also advisable to clean the file before starting `Item`. There is a built-in method `erase_file()` in `CsvHelper` for this:
 
-Example:
 ```python
 csv_helper = CsvHelper(config_)
 csv_helper.erase_file('items.csv')

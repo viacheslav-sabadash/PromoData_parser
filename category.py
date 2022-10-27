@@ -7,6 +7,9 @@ from parent_category import ParentCategory
 
 
 class Category(BaseParser):
+    """
+    Get collection of sub-categories.
+    """
 
     def __init__(
             self,
@@ -18,8 +21,15 @@ class Category(BaseParser):
         self.__parent = parent
         self._rules = rules
         self.__categories: OrderedSet['data_classes.Category'] = OrderedSet()
+        super(Category, self).__init__()
 
     def parse_all(self):
+        """
+        Handle for parser starting
+        :return: None
+        """
+        self.logger.info(' > Starting Categories parsing')
+
         counter = 0
         for parent_cat in self.__parent.categories:
             parent_category = data_classes.Category(
@@ -41,10 +51,20 @@ class Category(BaseParser):
                 )
                 counter += 1
 
+        self.logger.info(f' < Parent Categories parsing complete. Total = {len(self.__categories)}')
+
     @property
     def categories_data(self) -> list['data_classes.Category']:
+        """
+        List of dataclasses.
+        :return: list of dataclasses
+        """
         return list(self.__categories)
 
     @property
     def sub_categories_data(self) -> list['data_classes.Category']:
+        """
+        List of dataclasses without parent categories.
+        :return: list of dataclasses
+        """
         return list(filter(lambda cat: cat.parent_category_id is not None, self.__categories))

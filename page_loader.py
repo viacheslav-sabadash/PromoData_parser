@@ -1,14 +1,22 @@
 import random
 import time
 from datetime import datetime
+from logging import Logger
 
 import requests
 from requests.adapters import HTTPAdapter
+
+from log_lib import get_logger
 
 
 class PageLoader:
     _last_request_time: int = 0
     _session = requests.Session()
+    logger = None
+
+    def __init__(self):
+        if not self.logger:
+            self.logger: Logger = get_logger(self._config.logs_dir_abs, 'LOADER')
 
     def delay_val(self):
         if isinstance(self._config.delay_range_s, int):
@@ -30,7 +38,9 @@ class PageLoader:
         current_time = datetime.utcnow().timestamp()
         current_request_delay = self.delay_val()
         if current_time - PageLoader._last_request_time < current_request_delay:
-            time.sleep(current_request_delay - (current_time - PageLoader._last_request_time))
+            sleep_sec = current_request_delay - (current_time - PageLoader._last_request_time)
+            time.sleep(sleep_sec)
+            self.logger.info(f'Sleep for {sleep_sec} sec')
         PageLoader._last_request_time = current_time
 
         return PageLoader._session.get(url=url, headers=self._config.headers)

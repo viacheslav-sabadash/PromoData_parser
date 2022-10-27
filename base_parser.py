@@ -18,7 +18,7 @@ class BaseParser:
     def __init__(self):
         self._html = ''
         if not self.logger:
-            self.logger: Logger = get_logger(self._config.logs_dir_abs, 'BASE_PARSER')
+            self.logger: Logger = get_logger(self._config.logs_dir_abs, 'PARSER')
 
     def abs_url(self, href: str) -> str:
         """

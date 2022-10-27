@@ -23,14 +23,15 @@ class ParentCategory(BaseParser, PageLoader):
         self._rules: list[dict] = rules
         self._html: str = ''
         self.__categories: list['bs4.element.Tag'] = []
-        super().__init__()
+        super(ParentCategory, self).__init__()
 
     def parse(self):
         """
         Handle for parser starting
         :return: None
         """
-        self.logger.info('Starting Parent Categories parsing')
+        self.logger.info(f' > Starting Parent Categories parsing: {self._config.categories} ')
+
         if not self._html:
             self.get_html(url=self._config.base_url)
         page_soup = BeautifulSoup(self._html, PARSER)
@@ -39,7 +40,8 @@ class ParentCategory(BaseParser, PageLoader):
             self.__categories = list(
                 filter(lambda cat: cat.text in self._config.categories, self.__categories)
             )
-        self.logger.info(f'Parent Categories parsing complete. Total = {len(self.__categories)}')
+
+        self.logger.info(f' < Parent Categories parsing complete. Total = {len(self.__categories)}')
 
     @property
     def categories(self) -> list['bs4.element.Tag']:

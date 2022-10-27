@@ -1,5 +1,6 @@
 import re
 
+from category import Category
 from config import Config
 from csv_helper import CsvHelper
 from item import Item
@@ -209,14 +210,12 @@ csv_helper = CsvHelper(config)
 
 parent_categories = ParentCategory(config, PARENT_CATEGORIES_RULES)
 parent_categories.parse()
-print(parent_categories.categories)
-#
-# csv_helper.save_data('parent_categories_data.csv', parent_categories.categories_data)
-#
-# categories = Category(config, parent_categories, CHILD_CATEGORIES_RULES)
-# categories.parse_all()
-# print(categories.categories_data)
-#
+
+csv_helper.save_data('parent_categories_data.csv', parent_categories.categories_data)
+
+categories = Category(config, parent_categories, CHILD_CATEGORIES_RULES)
+categories.parse_all()
+
 # csv_helper.save_data('categories_data.csv', categories.categories_data)
 # csv_helper.save_data('sub_categories_data.csv', categories.sub_categories_data)
 #

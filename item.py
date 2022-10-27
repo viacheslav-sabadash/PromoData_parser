@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import data_classes
 from core.base_parser import BaseParser
 from core.config import Config
+from core.csv_helper import CsvHelper
 from core.page_loader import PageLoader
 from items_list import ItemsList
 from post_processing import PostProcessing
@@ -15,7 +16,7 @@ from post_processing import PostProcessing
 PARSER = 'html.parser'
 
 
-class Item(BaseParser, PageLoader):
+class Item(BaseParser, PageLoader, CsvHelper):
     """
     Collecting Items
     """
@@ -27,7 +28,8 @@ class Item(BaseParser, PageLoader):
             item_rules: list[dict],
             item_child_value_rules: dict,
             item_glob_value_rules: dict,
-            post_processing: Type['PostProcessing']
+            post_processing: Type['PostProcessing'],
+            csv_filename: str | None = None
     ):
         self._config = config_
         self.__items_list = items_list
@@ -35,9 +37,12 @@ class Item(BaseParser, PageLoader):
         self._item_child_value_rules = item_child_value_rules
         self._item_glob_value_rules = item_glob_value_rules
         self._post_processing = post_processing
+        self.__csv_filename = csv_filename
         self._html: str = ''
         self.__items: list['data_classes.Item'] = []
-        super(Item, self).__init__()
+        BaseParser.__init__(self)
+        PageLoader.__init__(self)
+        CsvHelper.__init__(self, self._config)
 
     def _item_parse(self, soup: 'bs4.element.Tag', rules: dict) -> dict[str, Any]:
         """
@@ -87,6 +92,8 @@ class Item(BaseParser, PageLoader):
                 # fix all fields to final result
                 item_data = self._post_processing(item, self._config.base_url).line_process()
                 self.__items.append(item_data)
+                if self.__csv_filename:
+                    self.append_data(self.__csv_filename, item_data)
                 self.logger.info(f' > {item_data}')
 
         self.logger.info(f' <<< Items parsing complete. Result total = {len(self.__items)}')

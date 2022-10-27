@@ -1,6 +1,8 @@
 import csv
+import os
 from logging import Logger
 from os import path
+from typing import Any
 
 from .config import Config
 from .log_lib import get_logger
@@ -25,6 +27,10 @@ class CsvHelper:
         """
         return path.join(self._config.output_directory_abs, filename)
 
+    def erase_file(self, file_name: str):
+        with open(self._path(file_name), 'w') as csvfile:
+            csvfile.write('')
+
     def save_data(self, file_name: str, data: list):
         """
         Save dataclass list to csv file
@@ -43,3 +49,17 @@ class CsvHelper:
                 writer.writerow(row.to_print_dict)
 
         self.logger.info(f'Saved {file_name}')
+
+    def append_data(self, file_name: str, data_class: Any):
+        file_exist = False
+        if os.path.exists(self._path(file_name)):
+            file_exist = True
+
+        with open(self._path(file_name), 'a') as csvfile:
+            fieldnames = data_class.fields_to_print
+            writer = csv.DictWriter(csvfile, fieldnames, delimiter=';')
+            if not file_exist:
+                writer.writeheader()
+            writer.writerow(data_class.to_print_dict)
+
+        self.logger.info(f'Appended line to {file_name}')

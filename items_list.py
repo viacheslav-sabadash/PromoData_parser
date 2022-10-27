@@ -26,7 +26,7 @@ class ItemsList(BaseParser, PageLoader):
         self._rules = rules
         self._html: str = ''
         self.__items: OrderedSet['data_classes.Page'] = OrderedSet()
-        super(ItemsList, self).__init__()
+        super().__init__()
 
     def parse_all(self):
         """

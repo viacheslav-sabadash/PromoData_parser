@@ -26,7 +26,7 @@ class Paginator(BaseParser, PageLoader):
         self._rules = rules
         self._html: str = ''
         self.__pages: OrderedSet['data_classes.Page'] = OrderedSet()
-        super(Paginator, self).__init__()
+        super().__init__()
 
     def parse_all(self):
         """

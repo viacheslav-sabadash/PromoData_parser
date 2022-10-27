@@ -21,7 +21,7 @@ class Category(BaseParser):
         self.__parent = parent
         self._rules = rules
         self.__categories: OrderedSet['data_classes.Category'] = OrderedSet()
-        super(Category, self).__init__()
+        super().__init__()
 
     def parse_all(self):
         """

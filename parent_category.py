@@ -23,7 +23,7 @@ class ParentCategory(BaseParser, PageLoader):
         self._rules: list[dict] = rules
         self._html: str = ''
         self.__categories: list['bs4.element.Tag'] = []
-        super(ParentCategory, self).__init__()
+        super().__init__()
 
     def parse(self):
         """

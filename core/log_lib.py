@@ -37,7 +37,7 @@ def get_logger(log_dir_path: str, logger_name: str = 'main') -> Logger:
     handler.setFormatter(formatter)
 
     coloredlogs.install(
-        level=DEBUG,     # INFO or DEBUG or ...
+        level=INFO,     # INFO or DEBUG or ...
         level_styles=level_style,
         field_styles=field_styles,
         fmt=formatter_str,

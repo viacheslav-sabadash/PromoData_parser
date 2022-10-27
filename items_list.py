@@ -1,3 +1,4 @@
+import enlighten
 from bs4 import BeautifulSoup
 from ordered_set import OrderedSet
 
@@ -19,11 +20,13 @@ class ItemsList(BaseParser, PageLoader):
             self,
             config_: 'Config',
             paginator: 'Paginator',
-            rules: list[dict]
+            rules: list[dict],
+            bar_manager: enlighten.Manager = None
     ):
         self._config = config_
         self.__paginator = paginator
         self._rules = rules
+        self.manager = bar_manager
         self._html: str = ''
         self.__items: OrderedSet['data_classes.Page'] = OrderedSet()
         super().__init__()
@@ -35,6 +38,9 @@ class ItemsList(BaseParser, PageLoader):
         """
         self.logger.info(f' >>> Starting Items List parsing for {len(self.__paginator.pagination_data)} pages')
 
+        if self.manager:
+            pbar = self.manager.counter(total=len(self.__paginator.pagination_data), desc='ItemLinks', unit='item_link')
+
         for page in self.__paginator.pagination_data:
             self.get_html(page.url)
             page_soup = BeautifulSoup(self._html, PARSER)
@@ -45,6 +51,9 @@ class ItemsList(BaseParser, PageLoader):
                         **page.__dict__
                     )
                 )
+
+            if self.manager:
+                pbar.update()
 
         self.logger.info(f' <<< Items List parsing complete. Result total = {len(self.__items)}')
 

@@ -1,3 +1,4 @@
+import enlighten
 from bs4 import BeautifulSoup
 from ordered_set import OrderedSet
 
@@ -19,11 +20,13 @@ class Paginator(BaseParser, PageLoader):
             self,
             config_: 'Config',
             categories: 'Category',
-            rules: list[dict]
+            rules: list[dict],
+            bar_manager: enlighten.Manager = None
     ):
         self._config = config_
         self.__categories = categories
         self._rules = rules
+        self.manager: enlighten.Manager = bar_manager
         self._html: str = ''
         self.__pages: OrderedSet['data_classes.Page'] = OrderedSet()
         super().__init__()
@@ -34,6 +37,9 @@ class Paginator(BaseParser, PageLoader):
         :return: None
         """
         self.logger.info(f' >>> Starting Pagination parsing for {len(self.__categories.categories_data)} categories')
+
+        if self.manager:
+            pbar = self.manager.counter(total=len(self.__categories.sub_categories_data), desc='Pages', unit='page')
 
         for category in self.__categories.sub_categories_data:
             self.__pages.add(  # first page
@@ -74,6 +80,9 @@ class Paginator(BaseParser, PageLoader):
                     break
                 else:
                     category_url = self.__pages[-1].url  # last url on page pagination
+
+                if self.manager:
+                    pbar.update()
 
         self.logger.info(f' <<< Pagination parsing complete. Result total = {len(self.__pages)}')
 

@@ -7,6 +7,8 @@ import re
 import time
 from logging import Logger
 
+import enlighten
+
 from category import Category
 from core.config import Config
 from core.csv_helper import CsvHelper
@@ -215,26 +217,37 @@ ITEM_GLOB_VALUE_RULES = {
 
 
 def main(config_: Config):
+    bar_manager = enlighten.get_manager()
+    total_pbar = bar_manager.counter(total=100, desc='Total', unit='progress')
+
     csv_helper = CsvHelper(config_)
 
     parent_categories = ParentCategory(config_, PARENT_CATEGORIES_RULES)
     parent_categories.parse()
+
+    total_pbar.update(5)
 
     csv_helper.save_data('parent_categories_data.csv', parent_categories.categories_data)
 
     categories = Category(config_, parent_categories, CHILD_CATEGORIES_RULES)
     categories.parse_all()
 
+    total_pbar.update(10)
+
     csv_helper.save_data('categories_data.csv', categories.categories_data)
     csv_helper.save_data('sub_categories_data.csv', categories.sub_categories_data)
 
-    cat_pagination = Paginator(config_, categories, PAGINATION_RULES)
+    cat_pagination = Paginator(config_, categories, PAGINATION_RULES, bar_manager)
     cat_pagination.parse_all()
+
+    total_pbar.update(15)
 
     csv_helper.save_data('pagination_data.csv', cat_pagination.pagination_data)
 
-    items_list = ItemsList(config_, cat_pagination, ITEMS_LIST_RULES)
+    items_list = ItemsList(config_, cat_pagination, ITEMS_LIST_RULES, bar_manager)
     items_list.parse_all()
+
+    total_pbar.update(20)
 
     csv_helper.save_data('items_list_data.csv', items_list.items_list_data)
 
@@ -246,11 +259,14 @@ def main(config_: Config):
         ITEM_CHILD_VALUE_RULES,
         ITEM_GLOB_VALUE_RULES,
         PostProcessing,
-        'items.csv'
+        'items.csv',
+        bar_manager
     )
     items.parse_all()
 
     # csv_helper.save_data('items.csv', items.items_data)
+
+    total_pbar.update(50)
 
 
 if __name__ == '__main__':

@@ -42,7 +42,7 @@ PARENT_CATEGORIES_RULES = [
         'call': 'find_all',
         'args': {
             'name': 'a',
-            'class_': re.compile(r'^catalog-menu-'),
+            'class_':  re.compile(r'^catalog-menu-'),
             'href': True
         }
     }
@@ -198,3 +198,14 @@ class Category(Printable):
 
 Instance of dataclass above saved only fields: **id**, **name**, **parent_category_id**.
 Fields: **url** and **parent_category** will be ignored as `field(repr=False)`
+
+### Save data line by line
+
+class `Item` can store data to csv file line by line. To activate this need add to Item __init__ csv_filename='[some_file_name.csv]'.
+It is also advisable to clean the file before starting `Item`. There is a built-in method `erase_file()` in `CsvHelper` for this.
+
+Example:
+```python
+csv_helper = CsvHelper(config_)
+csv_helper.erase_file('items.csv')
+```

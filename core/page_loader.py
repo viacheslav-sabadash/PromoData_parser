@@ -6,7 +6,7 @@ from logging import Logger
 import requests
 from requests.adapters import HTTPAdapter
 
-from log_lib import get_logger
+from .log_lib import get_logger
 
 
 class PageLoader:

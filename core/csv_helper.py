@@ -2,8 +2,8 @@ import csv
 from logging import Logger
 from os import path
 
-import config
-from log_lib import get_logger
+from .config import Config
+from .log_lib import get_logger
 
 
 class CsvHelper:
@@ -12,7 +12,7 @@ class CsvHelper:
     """
     logger = None
 
-    def __init__(self, config_: 'config.Config'):
+    def __init__(self, config_: 'Config'):
         self._config = config_
         if not self.logger:
             self.logger: Logger = get_logger(self._config.logs_dir_abs, 'CSV')

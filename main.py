@@ -8,11 +8,11 @@ import time
 from logging import Logger
 
 from category import Category
-from config import Config
-from csv_helper import CsvHelper
+from core.config import Config
+from core.csv_helper import CsvHelper
+from core.log_lib import get_logger
 from item import Item
 from items_list import ItemsList
-from log_lib import get_logger
 from paginator import Paginator
 from parent_category import ParentCategory
 from post_processing import PostProcessing

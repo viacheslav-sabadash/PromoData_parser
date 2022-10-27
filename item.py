@@ -5,11 +5,11 @@ from typing import Type, Any
 import bs4
 from bs4 import BeautifulSoup
 
-import config
 import data_classes
-from base_parser import BaseParser
+from core.base_parser import BaseParser
+from core.config import Config
+from core.page_loader import PageLoader
 from items_list import ItemsList
-from page_loader import PageLoader
 from post_processing import PostProcessing
 
 PARSER = 'html.parser'
@@ -22,7 +22,7 @@ class Item(BaseParser, PageLoader):
 
     def __init__(
             self,
-            config_: 'config.Config',
+            config_: 'Config',
             items_list: 'ItemsList',
             item_rules: list[dict],
             item_child_value_rules: dict,

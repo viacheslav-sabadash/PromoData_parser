@@ -7,7 +7,7 @@ import bs4
 import requests
 from furl import furl
 
-from log_lib import get_logger
+from .log_lib import get_logger
 
 
 class BaseParser:

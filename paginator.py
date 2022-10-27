@@ -1,11 +1,11 @@
 from bs4 import BeautifulSoup
 from ordered_set import OrderedSet
 
-import config
 import data_classes
-from base_parser import BaseParser
 from category import Category
-from page_loader import PageLoader
+from core.base_parser import BaseParser
+from core.config import Config
+from core.page_loader import PageLoader
 
 PARSER = 'html.parser'
 
@@ -17,7 +17,7 @@ class Paginator(BaseParser, PageLoader):
 
     def __init__(
             self,
-            config_: 'config.Config',
+            config_: 'Config',
             categories: 'Category',
             rules: list[dict]
     ):

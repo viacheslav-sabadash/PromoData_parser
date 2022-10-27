@@ -11,7 +11,7 @@ class Config:
         self.__config = {}
         self.__load_config_defaults()
         self.__load_config()
-        self.__project_dir = pathlib.Path(__file__).parent.resolve()
+        self.__project_dir = pathlib.Path(__file__).parent.parent.resolve()
 
     def __load_config_defaults(self):
         with open('config_defaults.json') as conf_def:

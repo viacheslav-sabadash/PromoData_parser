@@ -1,8 +1,8 @@
 from ordered_set import OrderedSet
 
-import config
 import data_classes
-from base_parser import BaseParser
+from core.base_parser import BaseParser
+from core.config import Config
 from parent_category import ParentCategory
 
 
@@ -13,7 +13,7 @@ class Category(BaseParser):
 
     def __init__(
             self,
-            config_: 'config.Config',
+            config_: 'Config',
             parent: 'ParentCategory',
             rules: list[dict]
     ):

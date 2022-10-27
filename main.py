@@ -233,37 +233,6 @@ def main(config: Config):
 
     csv_helper.save_data('pagination_data.csv', cat_pagination.pagination_data)
 
-    # # For Faster Test:
-    # import data_classes
-    #
-    # class PaginatorFake:
-    #     data = [
-    #         data_classes.Page(
-    #             uniq_name="Собаки|Корм сухой|1",
-    #             url="https://zootovary.ru/catalog/tovary-i-korma-dlya-sobak/korm-sukhoy/?pc=60",
-    #             parent_category_id=0,
-    #             parent_category="Собаки",
-    #             category_id=1,
-    #             category="Корм сухой",
-    #         ),
-    #         data_classes.Page(
-    #             uniq_name="Собаки|Корм сухой|2",
-    #             url="https://zootovary.ru/catalog/tovary-i-korma-dlya-sobak/korm-sukhoy/?pc=60&PAGEN_1=2&pc=60",
-    #             parent_category_id="0",
-    #             parent_category="Собаки",
-    #             category_id="1",
-    #             category="Корм сухой",
-    #         )
-    #     ]
-    #
-    #     @property
-    #     def pagination_data(self) -> list['data_classes.Page']:
-    #         return list(self.data)
-    #
-    # cat_pagination = PaginatorFake()
-    # print(cat_pagination.pagination_data)
-    # # /For Faster Test
-
     items_list = ItemsList(config, cat_pagination, ITEMS_LIST_RULES)
     items_list.parse_all()
 

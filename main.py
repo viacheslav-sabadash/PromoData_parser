@@ -5,6 +5,7 @@ from config import Config
 from csv_helper import CsvHelper
 from item import Item
 from items_list import ItemsList
+from paginator import Paginator
 from parent_category import ParentCategory
 from post_processing import PostProcessing
 from log_lib import get_logger
@@ -216,57 +217,54 @@ csv_helper.save_data('parent_categories_data.csv', parent_categories.categories_
 categories = Category(config, parent_categories, CHILD_CATEGORIES_RULES)
 categories.parse_all()
 
-# csv_helper.save_data('categories_data.csv', categories.categories_data)
-# csv_helper.save_data('sub_categories_data.csv', categories.sub_categories_data)
-#
-# cat_pagination = Paginator(config, categories, PAGINATION_RULES)
-# cat_pagination.parse_all()
-# print(cat_pagination.pagination_data)
-#
-# csv_helper.save_data('pagination_data.csv', cat_pagination.pagination_data)
+csv_helper.save_data('categories_data.csv', categories.categories_data)
+csv_helper.save_data('sub_categories_data.csv', categories.sub_categories_data)
 
-# Tmp:
-# import data_classes
-#
-#
-# class PaginatorFake:
-#     data = [
-#         data_classes.Page(
-#             uniq_name="Собаки|Корм сухой|1",
-#             url="https://zootovary.ru/catalog/tovary-i-korma-dlya-sobak/korm-sukhoy/?pc=60",
-#             parent_category_id=0,
-#             parent_category="Собаки",
-#             category_id=1,
-#             category="Корм сухой",
-#         ),
-#         data_classes.Page(
-#             uniq_name="Собаки|Корм сухой|2",
-#             url="https://zootovary.ru/catalog/tovary-i-korma-dlya-sobak/korm-sukhoy/?pc=60&PAGEN_1=2&pc=60",
-#             parent_category_id="0",
-#             parent_category="Собаки",
-#             category_id="1",
-#             category="Корм сухой",
-#         )
-#     ]
-#
-#     @property
-#     def pagination_data(self) -> list['data_classes.Page']:
-#         return list(self.data)
-#
-#
-# cat_pagination = PaginatorFake()
-# print(cat_pagination.pagination_data)
-# # /Tmp
-#
-#
-# items_list = ItemsList(config, cat_pagination, ITEMS_LIST_RULES)
-# items_list.parse_all()
-# print(items_list.items_list_data[:200])
-#
-# csv_helper.save_data('items_list_data.csv', items_list.items_list_data)
-#
-# items = Item(config, items_list, ITEM_RULES, ITEM_CHILD_VALUE_RULES, ITEM_GLOB_VALUE_RULES, PostProcessing)
-# items.parse_all()
-# print(items.items_data)
-#
-# csv_helper.save_data('items.csv', items.items_data)
+cat_pagination = Paginator(config, categories, PAGINATION_RULES)
+cat_pagination.parse_all()
+
+csv_helper.save_data('pagination_data.csv', cat_pagination.pagination_data)
+
+# For Test:
+import data_classes
+
+
+class PaginatorFake:
+    data = [
+        data_classes.Page(
+            uniq_name="Собаки|Корм сухой|1",
+            url="https://zootovary.ru/catalog/tovary-i-korma-dlya-sobak/korm-sukhoy/?pc=60",
+            parent_category_id=0,
+            parent_category="Собаки",
+            category_id=1,
+            category="Корм сухой",
+        ),
+        data_classes.Page(
+            uniq_name="Собаки|Корм сухой|2",
+            url="https://zootovary.ru/catalog/tovary-i-korma-dlya-sobak/korm-sukhoy/?pc=60&PAGEN_1=2&pc=60",
+            parent_category_id="0",
+            parent_category="Собаки",
+            category_id="1",
+            category="Корм сухой",
+        )
+    ]
+
+    @property
+    def pagination_data(self) -> list['data_classes.Page']:
+        return list(self.data)
+
+
+cat_pagination = PaginatorFake()
+print(cat_pagination.pagination_data)
+# /For Test
+
+
+items_list = ItemsList(config, cat_pagination, ITEMS_LIST_RULES)
+items_list.parse_all()
+
+csv_helper.save_data('items_list_data.csv', items_list.items_list_data)
+
+items = Item(config, items_list, ITEM_RULES, ITEM_CHILD_VALUE_RULES, ITEM_GLOB_VALUE_RULES, PostProcessing)
+items.parse_all()
+
+csv_helper.save_data('items.csv', items.items_data)

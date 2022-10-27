@@ -28,7 +28,7 @@ class Category(BaseParser):
         Handle for parser starting
         :return: None
         """
-        self.logger.info(' > Starting Categories parsing')
+        self.logger.info(f' > Starting Categories parsing for {len(self.__parent.categories_data)} parent categories')
 
         counter = 0
         for parent_cat in self.__parent.categories:
@@ -51,7 +51,7 @@ class Category(BaseParser):
                 )
                 counter += 1
 
-        self.logger.info(f' < Parent Categories parsing complete. Total = {len(self.__categories)}')
+        self.logger.info(f' < Parent Categories parsing complete. Result total = {len(self.__categories)}')
 
     @property
     def categories_data(self) -> list['data_classes.Category']:

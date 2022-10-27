@@ -41,7 +41,7 @@ class ParentCategory(BaseParser, PageLoader):
                 filter(lambda cat: cat.text in self._config.categories, self.__categories)
             )
 
-        self.logger.info(f' < Parent Categories parsing complete. Total = {len(self.__categories)}')
+        self.logger.info(f' < Parent Categories parsing complete. Result total = {len(self.__categories)}')
 
     @property
     def categories(self) -> list['bs4.element.Tag']:

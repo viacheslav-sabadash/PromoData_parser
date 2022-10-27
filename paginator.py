@@ -23,8 +23,11 @@ class Paginator(BaseParser, PageLoader):
         self._rules = rules
         self._html: str = ''
         self.__pages: OrderedSet['data_classes.Page'] = OrderedSet()
+        super(Paginator, self).__init__()
 
     def parse_all(self):
+        self.logger.info(f' > Starting Pagination parsing for {len(self.__categories.categories_data)} categories')
+
         for category in self.__categories.sub_categories_data:
             self.__pages.add(  # first page
                 data_classes.Page(
@@ -53,13 +56,19 @@ class Paginator(BaseParser, PageLoader):
                             category=category.name,
                         )
                     )
-                    print('[Paginator]: ', f'{category.parent_category}|{category.name}|{page.text}', ' -- ',
-                          self.abs_url(page.get('href', '')))
+                    # print(
+                    #     '[Paginator]: ',
+                    #     f'{category.parent_category}|{category.name}|{page.text}',
+                    #     ' -- ',
+                    #     self.abs_url(page.get('href', ''))
+                    # )
 
                 if self.__pages and category_url == self.__pages[-1].url:  # last same as just parsed
                     break
                 else:
                     category_url = self.__pages[-1].url  # last url on page pagination
+
+        self.logger.info(f' < Pagination parsing complete. Result total = {len(self.__pages)}')
 
     @property
     def pagination_data(self) -> list['data_classes.Page']:

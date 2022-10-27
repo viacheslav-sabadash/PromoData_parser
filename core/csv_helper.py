@@ -51,14 +51,19 @@ class CsvHelper:
         self.logger.info(f'Saved {file_name}')
 
     def append_data(self, file_name: str, data_class: Any):
-        file_exist = False
-        if os.path.exists(self._path(file_name)):
-            file_exist = True
+        add_headers = False
+        if not os.path.exists(self._path(file_name)):
+            self.erase_file(file_name)
+            add_headers = True
+        else:
+            file_stats = os.stat(self._path(file_name))
+            if file_stats.st_size < 10:
+                add_headers = True
 
         with open(self._path(file_name), 'a') as csvfile:
             fieldnames = data_class.fields_to_print
             writer = csv.DictWriter(csvfile, fieldnames, delimiter=';')
-            if not file_exist:
+            if add_headers:
                 writer.writeheader()
             writer.writerow(data_class.to_print_dict)
 

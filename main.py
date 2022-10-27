@@ -222,45 +222,14 @@ def main(config_: Config):
 
     csv_helper.save_data('parent_categories_data.csv', parent_categories.categories_data)
 
-    # categories = Category(config_, parent_categories, CHILD_CATEGORIES_RULES)
-    # categories.parse_all()
-    #
-    # csv_helper.save_data('categories_data.csv', categories.categories_data)
-    # csv_helper.save_data('sub_categories_data.csv', categories.sub_categories_data)
-    #
-    # cat_pagination = Paginator(config_, categories, PAGINATION_RULES)
-    # cat_pagination.parse_all()
+    categories = Category(config_, parent_categories, CHILD_CATEGORIES_RULES)
+    categories.parse_all()
 
-    # For Faster Test:
-    import data_classes
+    csv_helper.save_data('categories_data.csv', categories.categories_data)
+    csv_helper.save_data('sub_categories_data.csv', categories.sub_categories_data)
 
-    class PaginatorFake:
-        data = [
-            data_classes.Page(
-                uniq_name="Собаки|Корм сухой|1",
-                url="https://zootovary.ru/catalog/tovary-i-korma-dlya-sobak/korm-sukhoy/?pc=60",
-                parent_category_id=0,
-                parent_category="Собаки",
-                category_id=1,
-                category="Корм сухой",
-            ),
-            data_classes.Page(
-                uniq_name="Собаки|Корм сухой|2",
-                url="https://zootovary.ru/catalog/tovary-i-korma-dlya-sobak/korm-sukhoy/?pc=60&PAGEN_1=2&pc=60",
-                parent_category_id="0",
-                parent_category="Собаки",
-                category_id="1",
-                category="Корм сухой",
-            )
-        ]
-
-        @property
-        def pagination_data(self) -> list['data_classes.Page']:
-            return list(self.data)
-
-    cat_pagination = PaginatorFake()
-    print(cat_pagination.pagination_data)
-    # /For Faster Test
+    cat_pagination = Paginator(config_, categories, PAGINATION_RULES)
+    cat_pagination.parse_all()
 
     csv_helper.save_data('pagination_data.csv', cat_pagination.pagination_data)
 

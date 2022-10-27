@@ -1,3 +1,4 @@
+import re
 from logging import Logger
 from typing import Any, Union, Optional
 from urllib.parse import urljoin

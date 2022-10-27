@@ -16,6 +16,9 @@ PARSER = 'html.parser'
 
 
 class Item(BaseParser, PageLoader):
+    """
+    Collecting Items
+    """
 
     def __init__(
             self,
@@ -34,8 +37,15 @@ class Item(BaseParser, PageLoader):
         self._post_processing = post_processing
         self._html: str = ''
         self.__items: list['data_classes.Item'] = []
+        super(Item, self).__init__()
 
     def _item_parse(self, soup: 'bs4.element.Tag', rules: dict) -> dict[str, Any]:
+        """
+        Single item parse
+        :param soup: Tag
+        :param rules: list of item dict rules
+        :return: dict with Item fields
+        """
         result_item = {}
         for key, rule in rules.items():
             rule_result = self._parse_rule(soup, rule)
@@ -48,6 +58,12 @@ class Item(BaseParser, PageLoader):
         return result_item
 
     def parse_all(self):
+        """
+        Handle for parser starting
+        :return: None
+        """
+        self.logger.info(f' >>> Starting Items parsing for {len(self.__items_list.items_list_data)} urls')
+
         for page in self.__items_list.items_list_data:
             self.get_html(page.item_url)
             page_soup = BeautifulSoup(self._html, PARSER)
@@ -71,8 +87,14 @@ class Item(BaseParser, PageLoader):
                 # fix all fields to final result
                 item_data = self._post_processing(item, self._config.base_url).line_process()
                 self.__items.append(item_data)
-                print(item_data)
+                self.logger.info(f' > {item_data}')
+
+        self.logger.info(f' <<< Items parsing complete. Result total = {len(self.__items)}')
 
     @property
-    def items_data(self):
+    def items_data(self) -> list['data_classes.Item']:
+        """
+        List of dataclasses.
+        :return: list of dataclasses
+        """
         return list(self.__items)

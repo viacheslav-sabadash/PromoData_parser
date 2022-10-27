@@ -33,7 +33,7 @@ class ItemsList(BaseParser, PageLoader):
         Handle for parser starting
         :return: None
         """
-        self.logger.info(f' > Starting Items List parsing for {len(self.__paginator.pagination_data)} pages')
+        self.logger.info(f' >>> Starting Items List parsing for {len(self.__paginator.pagination_data)} pages')
 
         for page in self.__paginator.pagination_data:
             self.get_html(page.url)
@@ -46,7 +46,7 @@ class ItemsList(BaseParser, PageLoader):
                     )
                 )
 
-        self.logger.info(f' < Items List parsing complete. Result total = {len(self.__items)}')
+        self.logger.info(f' <<< Items List parsing complete. Result total = {len(self.__items)}')
 
     @property
     def items_list_data(self) -> list['data_classes.ItemList']:

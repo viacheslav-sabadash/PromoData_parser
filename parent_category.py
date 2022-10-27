@@ -30,7 +30,7 @@ class ParentCategory(BaseParser, PageLoader):
         Handle for parser starting
         :return: None
         """
-        self.logger.info(f' > Starting Parent Categories parsing: {self._config.categories} ')
+        self.logger.info(f' >>> Starting Parent Categories parsing: {self._config.categories} ')
 
         if not self._html:
             self.get_html(url=self._config.base_url)
@@ -41,7 +41,7 @@ class ParentCategory(BaseParser, PageLoader):
                 filter(lambda cat: cat.text in self._config.categories, self.__categories)
             )
 
-        self.logger.info(f' < Parent Categories parsing complete. Result total = {len(self.__categories)}')
+        self.logger.info(f' <<< Parent Categories parsing complete. Result total = {len(self.__categories)}')
 
     @property
     def categories(self) -> list['bs4.element.Tag']:

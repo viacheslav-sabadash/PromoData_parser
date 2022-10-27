@@ -33,7 +33,7 @@ class Paginator(BaseParser, PageLoader):
         Handle for parser starting
         :return: None
         """
-        self.logger.info(f' > Starting Pagination parsing for {len(self.__categories.categories_data)} categories')
+        self.logger.info(f' >>> Starting Pagination parsing for {len(self.__categories.categories_data)} categories')
 
         for category in self.__categories.sub_categories_data:
             self.__pages.add(  # first page
@@ -75,7 +75,7 @@ class Paginator(BaseParser, PageLoader):
                 else:
                     category_url = self.__pages[-1].url  # last url on page pagination
 
-        self.logger.info(f' < Pagination parsing complete. Result total = {len(self.__pages)}')
+        self.logger.info(f' <<< Pagination parsing complete. Result total = {len(self.__pages)}')
 
     @property
     def pagination_data(self) -> list['data_classes.Page']:

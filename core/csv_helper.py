@@ -34,7 +34,7 @@ class CsvHelper:
     def save_data(self, file_name: str, data: list):
         """
         Save dataclass list to csv file
-        :param file_name: filename of csv file
+        :param file_name: filename of csv file without path
         :param data: list of dataclasses with repr=True fields to select it for save
         :return: None
         """
@@ -51,6 +51,12 @@ class CsvHelper:
         self.logger.info(f'Saved {file_name}')
 
     def append_data(self, file_name: str, data_class: Any):
+        """
+        Line by line realtime csv update
+        :param file_name: filename of csv file without path
+        :param data_class: single dataclass for new line
+        :return: None
+        """
         add_headers = False
         if not os.path.exists(self._path(file_name)):
             self.erase_file(file_name)

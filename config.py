@@ -67,5 +67,13 @@ class Config:
         return self.__config.get('restart')
 
     @property
+    def restart__restart_count(self) -> int:
+        return self.restart.get('restart_count')
+
+    @property
+    def restart__interval_m(self) -> float:
+        return self.restart.get('interval_m')
+
+    @property
     def base_url(self) -> str:
         return self.__base_url

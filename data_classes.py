@@ -66,4 +66,4 @@ class Item(Printable):
 
     def __eq__(self, other):
         return self.sku_article == other.sku_article and \
-              self.sku_barcode == other.sku_barcode
+               self.sku_barcode == other.sku_barcode

@@ -20,41 +20,34 @@ class PostProcessingBase(metaclass=ABCMeta):
         ...
 
     @staticmethod
-    def parse_first_int_(val: str) -> int:
-        try:
-            result = re.findall(r'\d+', val)[0]
-        except IndexError:
-            result = 0
-        return result
+    def parse_all_int_(val) -> int:
+        val = str(val)
+        return int(''.join(x for x in val if x.isdigit()) or 0)
 
     @staticmethod
-    def parse_first_int(val) -> int:
+    def parse_all_float_(val) -> float:
         val = str(val)
-        try:
-            result = re.findall(r'\d+', val)[0]
-        except IndexError:
-            result = 0
-        return result
+        return float(''.join(x for x in val if x.isdigit() or x == '.') or 0)
 
     @staticmethod
     def convert_weight(val) -> int:
         val = str(val)
-        if re.findall(r'г|g', val, re.IGNORECASE):
-            return PostProcessingBase.parse_first_int_(val)
-        elif re.findall(r'кг|kg', val, re.IGNORECASE):
-            return PostProcessingBase.parse_first_int_(val) * 1000
+        if re.findall(r'кг|kg', val, re.IGNORECASE):
+            return int(PostProcessingBase.parse_all_float_(val) * 1000)
         elif re.findall(r'мг|mg', val, re.IGNORECASE):
-            return PostProcessingBase.parse_first_int_(val) // 1000
+            return int(PostProcessingBase.parse_all_float_(val) // 1000)
+        elif re.findall(r'г|g', val, re.IGNORECASE):
+            return int(PostProcessingBase.parse_all_float_(val))
         else:
             return None
 
     @staticmethod
     def convert_volume(val) -> int:
         val = str(val)
-        if re.findall(r'л|lir', val, re.IGNORECASE):
-            return PostProcessingBase.parse_first_int_(val) // 1000
-        elif re.findall(r'мл|mil|ml', val, re.IGNORECASE):
-            return PostProcessingBase.parse_first_int_(val)
+        if re.findall(r'мл|mil|ml', val, re.IGNORECASE):
+            return int(PostProcessingBase.parse_all_float_(val))
+        elif re.findall(r'л|lir', val, re.IGNORECASE):
+            return PostProcessingBase.parse_all_float_(val) // 1000
         else:
             return None
 
@@ -63,7 +56,7 @@ class PostProcessingBase(metaclass=ABCMeta):
         val = str(val)
         if re.findall(r'\D', val.strip(), re.IGNORECASE) or not val:
             return None
-        return PostProcessing.parse_first_int_(val)
+        return PostProcessing.parse_all_int_(val)
 
 
 class PostProcessing(PostProcessingBase):
@@ -97,6 +90,9 @@ class PostProcessing(PostProcessingBase):
             sku_barcode=self.value.get('sku_barcode', ''),
             sku_article=self.value.get('sku_article', ''),
             sku_country=self.value.get('sku_country', ''),
+            # sku_weight_min=self.value.get('sku_weight_min', ''),
+            # sku_volume_min=self.value.get('sku_volume_min', ''),
+            # sku_quantity_min=self.value.get('sku_quantity_min', ''),
             sku_weight_min=PostProcessing.convert_weight(self.value.get('sku_weight_min', '')),
             sku_volume_min=PostProcessing.convert_volume(self.value.get('sku_volume_min', '')),
             sku_quantity_min=PostProcessing.convert_amount(self.value.get('sku_quantity_min', '')),
@@ -112,17 +108,12 @@ class PostProcessing(PostProcessingBase):
         return getattr(self.value, 'text') if hasattr(self.value, 'text') else ''
 
     @property
-    def parse_first_int(self) -> int:
-        val = str(self.value)
-        try:
-            result = re.findall(r'\d+', val)[0]
-        except IndexError:
-            result = 0
-        return result
+    def parse_all_int(self) -> int:
+        return PostProcessing.parse_all_int_(self.value)
 
     @property
-    def bool(self) -> bool:
-        return bool(self.value)
+    def invert_bool(self) -> bool:
+        return not bool(self.value)
 
     @property
     def int(self) -> int:
@@ -140,7 +131,7 @@ class PostProcessing(PostProcessingBase):
     def map_images(self) -> list[str]:
         return list(
             map(
-                lambda im: urljoin(im.get('src'), self.base_url) if im.get('src') else '',
+                lambda im: urljoin(self.base_url, im.get('src')) if im.get('src') else '',
                 self.value
             )
         )

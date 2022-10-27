@@ -1,13 +1,9 @@
 import re
 
-from category import Category
 from config import Config
 from csv_helper import CsvHelper
 from item import Item
 from items_list import ItemsList
-from page_loader import PageLoader
-from paginator import Paginator
-from parent_category import ParentCategory
 from post_processing import PostProcessing
 
 URL = 'https://zootovary.ru/'
@@ -97,7 +93,7 @@ ITEM_CHILD_VALUE_RULES = {
         },
         'post_processing': [
             'get_text',
-            'parse_first_int',
+            'parse_all_int',
         ]
     },
     'price_promo': {
@@ -108,7 +104,7 @@ ITEM_CHILD_VALUE_RULES = {
         },
         'post_processing': [
             'get_text',
-            'parse_first_int',
+            'parse_all_int',
         ]
     },
     'sku_status': {
@@ -119,20 +115,33 @@ ITEM_CHILD_VALUE_RULES = {
         },
         'post_processing': [
             'get_text',
-            'bool',
+            'invert_bool',
             'int'
+        ]
+    },
+    'sku_barcode': {
+        'call': 'select_one',
+        'args': {
+            'selector': 'td[class^="tg-yw"] b[style="color:#c60505;"]',
+        },
+        'post_processing': [
+            'get_text',
         ]
     },
     'sku_article': {
         'call': 'select_one',
         'args': {
-            'selector': 'td[class^="tg-yw"] b[style="color:#c60505;"]',
+            'selector': 'td[class$="b-catalog-element-offer-first-col"] > br + b',
         },
+        'post_processing': [
+            'get_text',
+        ]
     },
     'sku_weight_min': {
         'call': 'select_one',
         'args': {
-            'selector': 'td + td + td > b + br > b',
+            'selector': 'td[class$="b-catalog-element-offer-first-col"] + '
+                        'td[class^="tg-yw"] + td[class^="tg-yw"]',
         },
         'post_processing': [
             'get_text',
@@ -141,7 +150,8 @@ ITEM_CHILD_VALUE_RULES = {
     'sku_volume_min': {
         'call': 'select_one',
         'args': {
-            'selector': 'td + td + td > b + br > b',
+            'selector': 'td[class$="b-catalog-element-offer-first-col"] + '
+                        'td[class^="tg-yw"] + td[class^="tg-yw"]',
         },
         'post_processing': [
             'get_text',
@@ -150,7 +160,8 @@ ITEM_CHILD_VALUE_RULES = {
     'sku_quantity_min': {
         'call': 'select_one',
         'args': {
-            'selector': 'td + td + td > b + br > b',
+            'selector': 'td[class$="b-catalog-element-offer-first-col"] + '
+                        'td[class^="tg-yw"] + td[class^="tg-yw"]',
         },
         'post_processing': [
             'get_text',
@@ -195,7 +206,6 @@ config = Config(URL)
 # page_loader = PageLoader(config)
 csv_helper = CsvHelper(config)
 
-
 # parent_categories = ParentCategory(config, PARENT_CATEGORIES_RULES)
 # parent_categories.parse()
 # print(parent_categories.categories)
@@ -217,6 +227,8 @@ csv_helper = CsvHelper(config)
 
 # Tmp:
 import data_classes
+
+
 class PaginatorFake:
     data = [
         data_classes.Page(
@@ -240,6 +252,7 @@ class PaginatorFake:
     @property
     def pagination_data(self) -> list['data_classes.Page']:
         return list(self.data)
+
 
 cat_pagination = PaginatorFake()
 print(cat_pagination.pagination_data)

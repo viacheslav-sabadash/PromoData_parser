@@ -1,9 +1,12 @@
+from logging import Logger
+
 import bs4
 from bs4 import BeautifulSoup
 
 import data_classes
 from core.base_parser import BaseParser
 from core.config import Config
+from core.log_lib import get_logger
 from core.page_loader import PageLoader
 
 PARSER = 'html.parser'

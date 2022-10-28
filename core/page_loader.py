@@ -16,12 +16,11 @@ class PageLoader:
 
     _last_request_time: int = 0
     _session = requests.Session()
-    logger = None
 
     def __init__(self):
         PageLoader._session.mount('', HTTPAdapter(max_retries=self._config.max_retries))
-        if not self.logger:
-            self.logger: Logger = get_logger(self._config.logs_dir_abs, 'LOADER')
+        self.logger: Logger = get_logger(self._config.logs_dir_abs)
+        # super().__init__()
 
     def delay_val(self):
         """

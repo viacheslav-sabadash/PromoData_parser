@@ -14,12 +14,11 @@ class BaseParser:
     """
     All parsing works here.
     """
-    logger = None
+    _html = ''
 
     def __init__(self):
-        self._html = ''
-        if not self.logger:
-            self.logger: Logger = get_logger(self._config.logs_dir_abs, 'PARSER')
+        self.logger: Logger = get_logger(self._config.logs_dir_abs)
+        # super().__init__()
 
     def abs_url(self, href: str) -> str:
         """

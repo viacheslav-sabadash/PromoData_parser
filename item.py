@@ -43,9 +43,10 @@ class Item(BaseParser, PageLoader, CsvHelper):
         self.manager = bar_manager
         self._html: str = ''
         self.__items: list['data_classes.Item'] = []
-        BaseParser.__init__(self)
-        PageLoader.__init__(self)
-        CsvHelper.__init__(self, self._config)
+        super().__init__()
+        # BaseParser.__init__(self)
+        # PageLoader.__init__(self)
+        # CsvHelper.__init__(self, self._config)
 
     def _item_parse(self, soup: 'bs4.element.Tag', rules: dict) -> dict[str, Any]:
         """

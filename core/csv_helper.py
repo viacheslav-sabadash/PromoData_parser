@@ -12,12 +12,10 @@ class CsvHelper:
     """
     Save data to csv
     """
-    logger = None
 
     def __init__(self, config_: 'Config'):
         self._config = config_
-        if not self.logger:
-            self.logger: Logger = get_logger(self._config.logs_dir_abs, 'CSV')
+        self.logger: Logger = get_logger(self._config.logs_dir_abs)
 
     def _path(self, filename: str):
         """

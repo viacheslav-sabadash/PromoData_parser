@@ -234,15 +234,46 @@ def main(config_: Config):
 
     total_pbar.update(10)
 
-    csv_helper.save_data('categories_data.csv', categories.categories_data)
-    csv_helper.save_data('sub_categories_data.csv', categories.sub_categories_data)
+    # csv_helper.save_data('categories_data.csv', categories.categories_data)
+    # csv_helper.save_data('sub_categories_data.csv', categories.sub_categories_data)
+    #
+    # cat_pagination = Paginator(config_, categories, PAGINATION_RULES, bar_manager)
+    # cat_pagination.parse_all()
+    #
+    # total_pbar.update(15)
+    #
+    # csv_helper.save_data('pagination_data.csv', cat_pagination.pagination_data)
 
-    cat_pagination = Paginator(config_, categories, PAGINATION_RULES, bar_manager)
-    cat_pagination.parse_all()
+    # For Faster Test:
+    import data_classes
 
-    total_pbar.update(15)
+    class PaginatorFake:
+        data = [
+            data_classes.Page(
+                uniq_name="Собаки|Корм сухой|1",
+                url="https://zootovary.ru/catalog/tovary-i-korma-dlya-sobak/korm-sukhoy/?pc=60",
+                parent_category_id=0,
+                parent_category="Собаки",
+                category_id=1,
+                category="Корм сухой",
+            ),
+            data_classes.Page(
+                uniq_name="Собаки|Корм сухой|2",
+                url="https://zootovary.ru/catalog/tovary-i-korma-dlya-sobak/korm-sukhoy/?pc=60&PAGEN_1=2&pc=60",
+                parent_category_id="0",
+                parent_category="Собаки",
+                category_id="1",
+                category="Корм сухой",
+            )
+        ]
 
-    csv_helper.save_data('pagination_data.csv', cat_pagination.pagination_data)
+        @property
+        def pagination_data(self) -> list['data_classes.Page']:
+            return list(self.data)
+
+    cat_pagination = PaginatorFake()
+    print(cat_pagination.pagination_data)
+    # /For Faster Test
 
     items_list = ItemsList(config_, cat_pagination, ITEMS_LIST_RULES, bar_manager)
     items_list.parse_all()
@@ -274,11 +305,13 @@ if __name__ == '__main__':
     config = Config(URL)
     logger: Logger = get_logger(config.logs_dir_abs, 'MAIN')
 
-    for attempt in range(config.restart__restart_count):
-        try:
-            main(config)
-        except Exception as ex:
-            logger.warning(f'main() process broken by: {str(ex)}')
-            logger.info(f'Retry {attempt + 1} from {config.restart__restart_count} '
-                        f'after {config.restart__interval_m:1.1f}m sleep')
-            time.sleep(config.restart__interval_m * 60)
+    main(config)
+
+    # for attempt in range(config.restart__restart_count):
+    #     try:
+    #         main(config)
+    #     except Exception as ex:
+    #         logger.warning(f'main() process broken by: {str(ex)}')
+    #         logger.info(f'Retry {attempt + 1} from {config.restart__restart_count} '
+    #                     f'after {config.restart__interval_m:1.1f}m sleep')
+    #         time.sleep(config.restart__interval_m * 60)

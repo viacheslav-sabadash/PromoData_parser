@@ -232,7 +232,7 @@ def main(config_: Config):
     csv_helper.save_data('categories_data.csv', categories.categories_data)
     csv_helper.save_data('sub_categories_data.csv', categories.sub_categories_data)
 
-    cat_pagination = Paginator(config_, categories, PAGINATION_RULES, bar_manager)
+    cat_pagination = Paginator(config_, categories, PAGINATION_RULES, progress_bar)
     cat_pagination.parse_all()
 
     csv_helper.save_data('pagination_data.csv', cat_pagination.pagination_data)

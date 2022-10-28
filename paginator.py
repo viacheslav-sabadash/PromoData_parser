@@ -36,7 +36,7 @@ class Paginator(BaseParser, PageLoader):
         Handle for parser starting
         :return: None
         """
-        self.logger.info(f' >>> Starting Pagination parsing for {len(self.__categories.categories_data)} categories')
+        self.logger.info(f' >>> Starting Pagination parsing for {len(self.__categories.sub_categories_data)} categories')
 
         if self.__progress_bar:
             self.__progress_bar.init_current(len(self.__categories.sub_categories_data), desc='Paginator')
@@ -81,8 +81,8 @@ class Paginator(BaseParser, PageLoader):
                 else:
                     category_url = self.__pages[-1].url  # last url on page pagination
 
-                if self.__progress_bar:
-                    self.__progress_bar.update_current()
+            if self.__progress_bar:
+                self.__progress_bar.update_current()
 
         self.logger.info(f' <<< Pagination parsing complete. Result total = {len(self.__pages)}')
 

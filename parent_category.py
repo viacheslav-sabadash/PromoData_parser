@@ -8,6 +8,7 @@ from core.base_parser import BaseParser
 from core.config import Config
 from core.log_lib import get_logger
 from core.page_loader import PageLoader
+from core.progress_bar import ProgressBar
 
 PARSER = 'html.parser'
 
@@ -20,10 +21,12 @@ class ParentCategory(BaseParser, PageLoader):
     def __init__(
             self,
             config_: 'Config',
-            rules: list[dict]
+            rules: list[dict],
+            progress_bar: 'ProgressBar' = None
     ):
         self._config = config_
         self._rules: list[dict] = rules
+        self.progress_bar = progress_bar
         self._html: str = ''
         self.__categories: list['bs4.element.Tag'] = []
         super().__init__()
@@ -35,6 +38,9 @@ class ParentCategory(BaseParser, PageLoader):
         """
         self.logger.info(f' >>> Starting Parent Categories parsing: {self._config.categories} ')
 
+        if self.progress_bar:
+            self.progress_bar.init_current(1, desc='ParentCategory')
+
         if not self._html:
             self.get_html(url=self._config.base_url)
         page_soup = BeautifulSoup(self._html, PARSER)
@@ -45,6 +51,10 @@ class ParentCategory(BaseParser, PageLoader):
             )
 
         self.logger.info(f' <<< Parent Categories parsing complete. Result total = {len(self.__categories)}')
+
+        if self.progress_bar:
+            self.progress_bar.update_total(5)
+            self.progress_bar.update_current(1)
 
     @property
     def categories(self) -> list['bs4.element.Tag']:

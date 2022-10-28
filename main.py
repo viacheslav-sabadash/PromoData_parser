@@ -13,6 +13,7 @@ from category import Category
 from core.config import Config
 from core.csv_helper import CsvHelper
 from core.log_lib import get_logger
+from core.progress_bar import ProgressBar
 from item import Item
 from items_list import ItemsList
 from paginator import Paginator
@@ -217,68 +218,27 @@ ITEM_GLOB_VALUE_RULES = {
 
 
 def main(config_: Config):
-    bar_manager = enlighten.get_manager()
-    total_pbar = bar_manager.counter(total=100, desc='Total', unit='progress')
-
+    progress_bar = ProgressBar()
     csv_helper = CsvHelper(config_)
 
-    parent_categories = ParentCategory(config_, PARENT_CATEGORIES_RULES)
+    parent_categories = ParentCategory(config_, PARENT_CATEGORIES_RULES, progress_bar)
     parent_categories.parse()
-
-    total_pbar.update(5)
 
     csv_helper.save_data('parent_categories_data.csv', parent_categories.categories_data)
 
-    categories = Category(config_, parent_categories, CHILD_CATEGORIES_RULES)
+    categories = Category(config_, parent_categories, CHILD_CATEGORIES_RULES, progress_bar)
     categories.parse_all()
 
-    total_pbar.update(10)
+    csv_helper.save_data('categories_data.csv', categories.categories_data)
+    csv_helper.save_data('sub_categories_data.csv', categories.sub_categories_data)
 
-    # csv_helper.save_data('categories_data.csv', categories.categories_data)
-    # csv_helper.save_data('sub_categories_data.csv', categories.sub_categories_data)
-    #
-    # cat_pagination = Paginator(config_, categories, PAGINATION_RULES, bar_manager)
-    # cat_pagination.parse_all()
-    #
-    # total_pbar.update(15)
-    #
-    # csv_helper.save_data('pagination_data.csv', cat_pagination.pagination_data)
+    cat_pagination = Paginator(config_, categories, PAGINATION_RULES, bar_manager)
+    cat_pagination.parse_all()
 
-    # For Faster Test:
-    import data_classes
+    csv_helper.save_data('pagination_data.csv', cat_pagination.pagination_data)
 
-    class PaginatorFake:
-        data = [
-            data_classes.Page(
-                uniq_name="Собаки|Корм сухой|1",
-                url="https://zootovary.ru/catalog/tovary-i-korma-dlya-sobak/korm-sukhoy/?pc=60",
-                parent_category_id=0,
-                parent_category="Собаки",
-                category_id=1,
-                category="Корм сухой",
-            ),
-            data_classes.Page(
-                uniq_name="Собаки|Корм сухой|2",
-                url="https://zootovary.ru/catalog/tovary-i-korma-dlya-sobak/korm-sukhoy/?pc=60&PAGEN_1=2&pc=60",
-                parent_category_id="0",
-                parent_category="Собаки",
-                category_id="1",
-                category="Корм сухой",
-            )
-        ]
-
-        @property
-        def pagination_data(self) -> list['data_classes.Page']:
-            return list(self.data)
-
-    cat_pagination = PaginatorFake()
-    print(cat_pagination.pagination_data)
-    # /For Faster Test
-
-    items_list = ItemsList(config_, cat_pagination, ITEMS_LIST_RULES, bar_manager)
+    items_list = ItemsList(config_, cat_pagination, ITEMS_LIST_RULES, progress_bar)
     items_list.parse_all()
-
-    total_pbar.update(20)
 
     csv_helper.save_data('items_list_data.csv', items_list.items_list_data)
 
@@ -291,13 +251,11 @@ def main(config_: Config):
         ITEM_GLOB_VALUE_RULES,
         PostProcessing,
         'items.csv',
-        bar_manager
+        progress_bar
     )
     items.parse_all()
 
     # csv_helper.save_data('items.csv', items.items_data)
-
-    total_pbar.update(50)
 
 
 if __name__ == '__main__':
@@ -305,13 +263,11 @@ if __name__ == '__main__':
     config = Config(URL)
     logger: Logger = get_logger(config.logs_dir_abs, 'MAIN')
 
-    main(config)
-
-    # for attempt in range(config.restart__restart_count):
-    #     try:
-    #         main(config)
-    #     except Exception as ex:
-    #         logger.warning(f'main() process broken by: {str(ex)}')
-    #         logger.info(f'Retry {attempt + 1} from {config.restart__restart_count} '
-    #                     f'after {config.restart__interval_m:1.1f}m sleep')
-    #         time.sleep(config.restart__interval_m * 60)
+    for attempt in range(config.restart__restart_count):
+        try:
+            main(config)
+        except Exception as ex:
+            logger.warning(f'main() process broken by: {str(ex)}')
+            logger.info(f'Retry {attempt + 1} from {config.restart__restart_count} '
+                        f'after {config.restart__interval_m:1.1f}m sleep')
+            time.sleep(config.restart__interval_m * 60)

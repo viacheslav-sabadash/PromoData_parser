@@ -1,4 +1,3 @@
-import enlighten
 from bs4 import BeautifulSoup
 from ordered_set import OrderedSet
 
@@ -7,6 +6,7 @@ from category import Category
 from core.base_parser import BaseParser
 from core.config import Config
 from core.page_loader import PageLoader
+from core.progress_bar import ProgressBar
 
 PARSER = 'html.parser'
 
@@ -21,12 +21,12 @@ class Paginator(BaseParser, PageLoader):
             config_: 'Config',
             categories: 'Category',
             rules: list[dict],
-            bar_manager: enlighten.Manager = None
+            progress_bar: 'ProgressBar' = None
     ):
         self._config = config_
         self.__categories = categories
         self._rules = rules
-        self.manager: enlighten.Manager = bar_manager
+        self.__progress_bar = progress_bar
         self._html: str = ''
         self.__pages: OrderedSet['data_classes.Page'] = OrderedSet()
         super().__init__()
@@ -38,8 +38,8 @@ class Paginator(BaseParser, PageLoader):
         """
         self.logger.info(f' >>> Starting Pagination parsing for {len(self.__categories.categories_data)} categories')
 
-        if self.manager:
-            pbar = self.manager.counter(total=len(self.__categories.sub_categories_data), desc='Pages', unit='page')
+        if self.__progress_bar:
+            self.__progress_bar.init_current(len(self.__categories.sub_categories_data), desc='Paginator')
 
         for category in self.__categories.sub_categories_data:
             self.__pages.add(  # first page
@@ -81,10 +81,13 @@ class Paginator(BaseParser, PageLoader):
                 else:
                     category_url = self.__pages[-1].url  # last url on page pagination
 
-                if self.manager:
-                    pbar.update()
+                if self.__progress_bar:
+                    self.__progress_bar.update_current()
 
         self.logger.info(f' <<< Pagination parsing complete. Result total = {len(self.__pages)}')
+
+        if self.__progress_bar:
+            self.__progress_bar.update_total(15)
 
     @property
     def pagination_data(self) -> list['data_classes.Page']:

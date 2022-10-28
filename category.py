@@ -3,6 +3,7 @@ from ordered_set import OrderedSet
 import data_classes
 from core.base_parser import BaseParser
 from core.config import Config
+from core.progress_bar import ProgressBar
 from parent_category import ParentCategory
 
 
@@ -15,11 +16,13 @@ class Category(BaseParser):
             self,
             config_: 'Config',
             parent: 'ParentCategory',
-            rules: list[dict]
+            rules: list[dict],
+            progress_bar: 'ProgressBar' = None
     ):
         self._config = config_
         self.__parent = parent
         self._rules = rules
+        self.__progress_bar = progress_bar
         self.__categories: OrderedSet['data_classes.Category'] = OrderedSet()
         super().__init__()
 
@@ -29,6 +32,9 @@ class Category(BaseParser):
         :return: None
         """
         self.logger.info(f' >>> Starting Categories parsing for {len(self.__parent.categories_data)} parent categories')
+
+        if self.__progress_bar:
+            self.__progress_bar.init_current(len(self.__parent.categories), desc='Category')
 
         counter = 0
         for parent_cat in self.__parent.categories:
@@ -51,7 +57,13 @@ class Category(BaseParser):
                 )
                 counter += 1
 
+            if self.__progress_bar:
+                self.__progress_bar.update_current()
+
         self.logger.info(f' <<< Parent Categories parsing complete. Result total = {len(self.__categories)}')
+
+        if self.__progress_bar:
+            self.__progress_bar.update_total(5)
 
     @property
     def categories_data(self) -> list['data_classes.Category']:

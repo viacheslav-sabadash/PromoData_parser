@@ -4,13 +4,13 @@ from typing import Type, Any
 
 import bs4
 from bs4 import BeautifulSoup
-import enlighten
 
 import data_classes
 from core.base_parser import BaseParser
 from core.config import Config
 from core.csv_helper import CsvHelper
 from core.page_loader import PageLoader
+from core.progress_bar import ProgressBar
 from items_list import ItemsList
 from post_processing import PostProcessing
 
@@ -31,7 +31,7 @@ class Item(BaseParser, PageLoader, CsvHelper):
             item_glob_value_rules: dict,
             post_processing: Type['PostProcessing'],
             csv_filename: str | None = None,
-            bar_manager: enlighten.Manager = None
+            progress_bar: 'ProgressBar' = None
     ):
         self._config = config_
         self.__items_list = items_list
@@ -40,13 +40,10 @@ class Item(BaseParser, PageLoader, CsvHelper):
         self._item_glob_value_rules = item_glob_value_rules
         self._post_processing = post_processing
         self.__csv_filename = csv_filename
-        self.manager = bar_manager
+        self.__progress_bar = progress_bar
         self._html: str = ''
         self.__items: list['data_classes.Item'] = []
         super().__init__()
-        # BaseParser.__init__(self)
-        # PageLoader.__init__(self)
-        # CsvHelper.__init__(self, self._config)
 
     def _item_parse(self, soup: 'bs4.element.Tag', rules: dict) -> dict[str, Any]:
         """
@@ -73,8 +70,8 @@ class Item(BaseParser, PageLoader, CsvHelper):
         """
         self.logger.info(f' >>> Starting Items parsing for {len(self.__items_list.items_list_data)} urls')
 
-        if self.manager:
-            pbar = self.manager.counter(total=len(self.__items_list.items_list_data), desc='Items', unit='item')
+        if self.__progress_bar:
+            self.__progress_bar.init_current(len(self.__items_list.items_list_data), desc='Item')
 
         for page in self.__items_list.items_list_data:
             self.get_html(page.item_url)
@@ -103,10 +100,13 @@ class Item(BaseParser, PageLoader, CsvHelper):
                     self.append_data(self.__csv_filename, item_data)
                 self.logger.info(f' > {item_data}')
 
-            if self.manager:
-                pbar.update()
+            if self.__progress_bar:
+                self.__progress_bar.update_current()
 
         self.logger.info(f' <<< Items parsing complete. Result total = {len(self.__items)}')
+
+        if self.__progress_bar:
+            self.__progress_bar.update_total(50)
 
     @property
     def items_data(self) -> list['data_classes.Item']:
